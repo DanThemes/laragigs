@@ -26,16 +26,20 @@ class ListingController extends Controller
     }
 
     public function store(Request $request) {
-        dd($request->file('logo'));
         $formFields = $request->validate([
             'title' => 'required',
-            'company' => 'required|unique:listings',
+            'company' => 'required|unique:listings,company',
             'location' => 'required',
             'website' => 'required',
             'email' => 'required|email',
             'tags' => 'required',
             'description' => 'required'
         ]);
+
+        if ($request->hasFile('logo')) {
+            $formFields['logo'] = $request->file('logo')->store('logos', 'public');
+        }
+        // dd($formFields);
 
         Listing::create($formFields);
 
